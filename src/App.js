@@ -3,12 +3,13 @@ import './App.css';
 import { createAvatar } from '@dicebear/core';
 import { adventurer } from '@dicebear/collection';
 import { useEffect, useState } from 'react';
-import { Button, Layout, Select } from 'antd';
+import { Button, Layout, Select, Radio } from 'antd';
 
 const { Sider, Content} = Layout
 function App() {
 
   const [avatar, setAvatar] = useState("");
+  const [hairLength, setHairLength] = useState(true);
   const [hair, setHair] = useState(1);
   const [eyebrows, setEyebrows] = useState(1);
   const [eyes, setEyes] = useState(1);
@@ -17,12 +18,12 @@ function App() {
   const [glasses, setGlasses] = useState(0)
   const [hairColor, setHairColor] = useState("0e0e0e");
   const [skinColor, setSkinColor] = useState("f2d3b1");
-  const [character, setCharacter] = useState("Milo");
+  // const [character, setCharacter] = useState("Milo");
   const generateAvatar = async ()=>{
     const avatart = createAvatar(adventurer, {
-      seed: `Sassy`,
+      seed: `Milo`,
       skinColor: [`${skinColor}`],
-      hair: [`short${hair < 10? "0"+hair : hair}`],
+      hair: [`${hairLength? "short": "long"}${hair < 10? "0"+hair : hair}`],
       eyebrows: [`variant${eyebrows < 10? "0"+eyebrows : eyebrows}`],
       eyes: [`variant${eyes < 10? "0"+eyes : eyes}`],
       earrings: [`variant02`],
@@ -30,6 +31,7 @@ function App() {
       hairColor: [`${hairColor}`],
       glasses: [`variant0${glasses}`],
       glassesProbability: 100,
+      hairProbability: 100
     })
   
     const svg = await avatart.toDataUri();
@@ -74,7 +76,7 @@ function App() {
   useEffect(()=>{
     generateAvatar();
 
-  },[hair,eyebrows, eyes, earrings,mouth, hairColor, glasses, skinColor, character])
+  },[hair,eyebrows, eyes, earrings,mouth, hairColor, glasses, skinColor, hairLength])
 
 
   const handleClick = (state, operator)=>{
@@ -89,6 +91,10 @@ function App() {
             <Button onClick={()=> handleClick(setHair, "-")}>-</Button>
             <label>{hair}</label>
             <Button onClick={()=>handleClick(setHair, "+")}>+</Button>
+            <Radio.Group value={hairLength} onChange={e=>setHairLength(e.target.value)}>
+              <Radio value={true}>Short</Radio>
+              <Radio value={false}>Long</Radio>
+            </Radio.Group>
           </div>
           <div>
             <h3>Eyebrows</h3>
